@@ -12,7 +12,12 @@ The colors file is a black background with shades of bold green for the various 
 for quoted literals and numbers, yellowish green for operators and bright yellow for punctuation. Your program
 name values (variables, procedure, function names and calls, etcl...) are cyan.  Comments are white and italic.
 
-You can get a flavor for it from any PL/SQL code sample on [my blog pages](https://lee-lindley.github.io/)
+| Screenshots |
+|:--:|
+| ![screenshot1.gif](images/screenshot1.gif) |
+| ![screenshot2.gif](images/screenshot2.gif) |
+
+You can get more of a flavor for it from PL/SQL code samples on [my blog pages](https://lee-lindley.github.io/)
 as I also have a *rouge* lexer that follows mostly the same parsing rules along with a syntax.css
 file for *rouge*/*jekyll* to display it with the same colors as *lee.vim*.
 
