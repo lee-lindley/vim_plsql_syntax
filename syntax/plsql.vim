@@ -543,8 +543,9 @@ syn match   plsqlStringError "'.*$"
 syn match   plsqlNumbers transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
 syn match   plsqlNumbersCom contained transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
 syn match   plsqlIntLiteral contained "[+-]\=\d\+"
-syn match   plsqlFloatLiteral contained "[+-]\=\d\+\.\d*"
-syn match   plsqlFloatLiteral contained "[+-]\=\d*\.\d*"
+syn match   plsqlFloatLiteral contained "[+-]\?\(\(\.\d\+\([eE][+-]\?\d\+\)\)\|\d\+\.\(\d\+\([eE][+-]\?\d\+\)\?\)\)"
+"syn match   plsqlFloatLiteral contained "[+-]\=\d\+\.\d*"
+"syn match   plsqlFloatLiteral contained "[+-]\=\d*\.\d*"
 syn region plsqlCharLiteral	matchgroup=plsqlOperator start=+n\?"+     end=+"+
 syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+     end=+'+
 syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+
