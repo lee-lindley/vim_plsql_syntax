@@ -6,7 +6,7 @@ Repository includes
     colors/lee.vim
 
 The syntax file replaces the functionality of the *plsql.vim* file that ships with vim (it was last updated
-for Oracle 9).
+for Oracle 9). This update adds keywords and syntax through Oracle version 19c.
 
 The colors file *lee.vim* is a black background with shades of bold green for the various oracle keyword types, orangish
 for quoted literals and numbers, yellowish green for operators and bright yellow for punctuation. Your program method
