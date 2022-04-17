@@ -687,7 +687,8 @@ if version >= 508 || !exists("did_plsql_syn_inits")
   HiLink plsqlSpaceError	Error
   HiLink plsqlPseudo		PreProc
   HiLink plsqlKeyword		Keyword
-  HiLink plsqlReserved          Identifier
+"  HiLink plsqlReserved          Identifier
+  HiLink plsqlReserved          Statement
   HiLink plsqlRepeat		Repeat
   HiLink plsqlStorage		StorageClass
   HiLink plsqlFunction  	Function

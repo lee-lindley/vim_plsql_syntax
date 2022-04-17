@@ -22,11 +22,13 @@ hi Boolean  term=underline	ctermfg=LightRed		guifg=#FFB319
 " .kt Keyword.Type
 hi Type	term=underline		ctermfg=LightGreen	guifg=#008B2F gui=bold
 " .kr Keyword.Reserved (CREATE IS)
-hi Identifier term=underline cterm=bold ctermfg=LightGreen    guifg=#00CC00 gui=bold
-" .k (nreserved) can be Statement if we separate them (PROCEDURE RETURN DETERMINISTIC) #00CC88 bold
-hi Statement term=bold		ctermfg=LightGreen              guifg=#00CC00 gui=bold
+hi Statement term=underline cterm=bold  ctermfg=LightGreen  guifg=#00CC00 gui=bold
+"hi Identifier term=underline cterm=bold ctermfg=LightGreen    guifg=#00CC00 gui=bold
+" .k (nreserved) if we separate them (PROCEDURE RETURN DETERMINISTIC) #00CC88 bold
+"hi Keyword  term=underline term=bold    ctermfg=LightGreen  guifg=#00CC00 gui=bold
 " .nf can be vim Function (REGEXP_REPLACE) #4DFFFF
-hi Function term=bold		ctermfg=Brown              guifg=#4DFFFF 
+hi Identifier term=bold		ctermfg=Brown              guifg=#4DFFFF 
+"hi Function term=bold		ctermfg=Brown              guifg=#4DFFFF 
 " .c .cm .c1
 hi Comment	term=bold		ctermfg=White    guifg=#FEFDFF gui=italic 
 " .cp Comment.Preproc
@@ -48,7 +50,7 @@ hi Todo	term=standout ctermbg=Yellow ctermfg=Black guifg=Blue guibg=Yellow
 hi link String	Constant
 "hi link Character	Constant
 "hi link Boolean	Constant
-"hi link Function    Identifier
+hi link Function    Identifier
 hi link Float		Number
 hi link Repeat      Statement
 hi link Conditional	Repeat
