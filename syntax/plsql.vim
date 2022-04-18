@@ -50,19 +50,19 @@ syn match   plsqlSymbol "[;,.()]"
 "syn match   plsqlOperator "\(+\|-\|\*\|/\|=\|<\|>\|@\|\*\*\|!=\|\~=\)"
 "syn match   plsqlOperator "\(^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\"\)"
 syn match   plsqlOperator "[-+*/=<>@"]"
-syn match   plsqlOperator "\(^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\*\*\|!=\|\~=\)"
-syn match   plsqlOperator "\<\(NOT\|AND\|OR\|LIKE\|BETWEEN\|IN\)\>"
+syn match   plsqlOperator "\%\(^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\*\*\|!=\|\~=\)"
+syn match   plsqlOperator "\<\%\(NOT\|AND\|OR\|LIKE\|BETWEEN\|IN\)\>"
 syn match   plsqlBooleanLiteral "\<NULL\>"
 syn match   plsqlReserved "\<IS\>"
-syn match   plsqlOperator "\<IS\(\s\|\n\)\+\(NOT\(\s\|\n\)\+\)\?NULL\>"
+syn match   plsqlOperator "\<IS\%\(\s\|\n\)\+\%\(NOT\%\(\s\|\n\)\+\)\?NULL\>"
 "
 " conditional compilation Preprocessor directives
 syn match plsqlPseudo "$[$a-z][a-z0-9$_#]*"
 
-syn match plsqlReserved "\<\(CREATE\|THEN\|UPDATE\|INSERT\|SET\)\>"
-syn match plsqlKeyword "\<\(REPLACE\|PACKAGE\|FUNCTION\|PROCEDURE\|TYPE|BODY\|WHEN\|MATCHED\)\>"
-syn match plsqlReserved "\<CREATE\(\s\|\n\)\+\(OR\(\s\|\n\)\+REPLACE\(\s\|\n\)\+\)\?\(PACKAGE\|FUNCTION\|PROCEDURE\|TYPE\)\(\(\s\|\n\)\+BODY\)\?"
-syn match plsqlReserved "\<WHEN\(\s\|\n\)\+\(NOT\(\s\|\n\)\+\)\?MATCHED\(\s\|\n\)\+THEN\(\s\|\n\)\+\(UPDATE\|INSERT\)\(\(\s\|\n\)\+SET\)\?"
+syn match plsqlReserved "\<\%\(CREATE\|THEN\|UPDATE\|INSERT\|SET\)\>"
+syn match plsqlKeyword "\<\%\(REPLACE\|PACKAGE\|FUNCTION\|PROCEDURE\|TYPE|BODY\|WHEN\|MATCHED\)\>"
+syn match plsqlReserved "\<CREATE\%\(\s\|\n\)\+\%\(OR\%\(\s\|\n\)\+REPLACE\%\(\s\|\n\)\+\)\?\%\(PACKAGE\|FUNCTION\|PROCEDURE\|TYPE\)\%\(\%\(\s\|\n\)\+BODY\)\?"
+syn match plsqlReserved "\<WHEN\%\(\s\|\n\)\+\%\(NOT\%\(\s\|\n\)\+\)\?MATCHED\%\(\s\|\n\)\+THEN\%\(\s\|\n\)\+\%\(UPDATE\|INSERT\)\%\(\%\(\s\|\n\)\+SET\)\?"
 
 "
 " Oracle's non-reserved keywords
@@ -579,12 +579,22 @@ syn sync ccomment plsqlCommentL
 syn match   plsqlStringError "'.*$"
 
 " Various types of literals.
-syn match   plsqlNumbers transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
-syn match   plsqlNumbersCom contained transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
-" the + and - get sucked up as operators. Not sure how to take precedence here. Something to do with word boundaries
-syn match   plsqlIntLiteral contained "[+-]\=\d\+"
-syn match   plsqlFloatLiteral contained "[+-]\?\(\(\.\d\+\([eE][+-]\?\d\+\)\)\|\d\+\.\(\d\+\([eE][+-]\?\d\+\)\?\)\)"
+" the + and - get sucked up as operators. Not sure how to take precedence here. Something to do with word boundaries.
+" most other syntax files do not try to includ +/- in the number token, so leave them as unary operators
+"syn match   plsqlNumbers transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
+"syn match   plsqlNumbersCom contained transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
+"syn match   plsqlIntLiteral contained "[+-]\=\d\+"
+"syn match   plsqlFloatLiteral contained "[+-]\=\d\+\.\d*"
+"syn match   plsqlFloatLiteral contained "[+-]\=\d*\.\d*"
+syn match   plsqlNumbers transparent "\<\d\|\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
+syn match   plsqlNumbersCom contained transparent "\<\d\|\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
+syn match   plsqlIntLiteral contained "\d\+"
+syn match   plsqlFloatLiteral contained "\d\+\.\%\(\d\+\%\([eE][+-]\?\d\+\)\?\)\?"
+syn match   plsqlFloatLiteral contained "\.\%\(\d\+\%\([eE][+-]\?\d\+\)\?\)"
+" double quoted strings in SQL are database object names. Should be a subgroup of Normal.
+" We will use Character group as a proxy for that so color can be chosen close to Normal
 syn region plsqlCharLiteral	matchgroup=plsqlOperator start=+n\?"+     end=+"+
+" quoted string literals
 syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+
 syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+
 syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+
@@ -598,7 +608,6 @@ syn match plsqlTypeAttribute  "%\(TYPE\|ROWTYPE\)\>"
 
 " All other attributes.
 syn match plsqlAttribute "%\(BULK_EXCEPTIONS\|BULK_ROWCOUNT\|ISOPEN\|FOUND\|NOTFOUND\|ROWCOUNT\)\>"
-"
 
 " This'll catch mis-matched close-parens.
 syn cluster plsqlParenGroup contains=plsqlParenError,@plsqlCommentGroup,plsqlCommentSkip,plsqlIntLiteral,plsqlFloatLiteral,plsqlNumbersCom
@@ -622,45 +631,49 @@ syn sync minlines=1000 maxlines=2000
 " Define the default highlighting.
 " Only when an item doesn't have highlighting yet.
 
-  hi def link plsqlAttribute		Macro
-  hi def link plsqlBlockError	Error
-  hi def link plsqlBooleanLiteral	Boolean
-  hi def link plsqlCharLiteral	Character
-  hi def link plsqlComment		Comment
-  hi def link plsqlCommentL		Comment
-  hi def link plsqlConditional	Conditional
-  hi def link plsqlError		Error
-  hi def link plsqlErrInBracket	Error
-  hi def link plsqlErrInBlock	Error
-  hi def link plsqlErrInParen	Error
-  hi def link plsqlException		Function
-  hi def link plsqlFloatLiteral	Float
-  hi def link plsqlFunction		Function
-  hi def link plsqlGarbage		Error
-  hi def link plsqlHostIdentifier	Label
-  hi def link plsqlIdentifier	Normal
-  hi def link plsqlIntLiteral	Number
-  hi def link plsqlOperator		Operator
-  hi def link plsqlParen		Normal
-  hi def link plsqlParenError	Error
-  hi def link plsqlSpaceError	Error
-  hi def link plsqlPseudo		PreProc
-  hi def link plsqlKeyword		Keyword
-  hi def link plsqlReserved          Statement
-  hi def link plsqlRepeat		Repeat
-  hi def link plsqlStorage		StorageClass
-  hi def link plsqlFunction  	Function
-  hi def link plsqlStringError	Error
-  hi def link plsqlStringLiteral	String
-  hi def link plsqlCommentString	String
-  hi def link plsqlComment2String	String
-  hi def link plsqlSymbol		Special
-  hi def link plsqlTrigger		Function
-  hi def link plsqlTypeAttribute	StorageClass
-  hi def link plsqlTodo		Todo
+  hi def link plsqlAttribute	    Macro
+  hi def link plsqlBlockError	    Error
+  hi def link plsqlBooleanLiteral   Boolean
+  hi def link plsqlCharLiteral	    Character
+  hi def link plsqlComment	    Comment
+  hi def link plsqlCommentL	    Comment
+  hi def link plsqlConditional	    Conditional
+  hi def link plsqlError	    Error
+  hi def link plsqlErrInBracket	    Error
+  hi def link plsqlErrInBlock	    Error
+  hi def link plsqlErrInParen	    Error
+  hi def link plsqlException	    Function
+  hi def link plsqlFloatLiteral	    Float
+  hi def link plsqlFunction	    Function
+  hi def link plsqlGarbage	    Error
+  hi def link plsqlHostIdentifier   Label
+  hi def link plsqlIdentifier	    Normal
+  hi def link plsqlIntLiteral	    Number
+  hi def link plsqlOperator	    Operator
+  hi def link plsqlParenError	    Error
+  hi def link plsqlSpaceError	    Error
+  hi def link plsqlPseudo	    PreProc
+  hi def link plsqlKeyword	    Keyword
+  hi def link plsqlReserved         Statement
+  hi def link plsqlRepeat	    Repeat
+  hi def link plsqlStorage	    StorageClass
+  hi def link plsqlFunction  	    Function
+  hi def link plsqlStringError	    Error
+  hi def link plsqlStringLiteral    String
+  hi def link plsqlCommentString    String
+  hi def link plsqlComment2String   String
+" to be able to change them, need override whether defined or not
 if exists("plsql_legacy_sql_keywords")
-    hi def link plsqlSQLKeyword      Function
+    hi link plsqlSQLKeyword     Function
+    hi link plsqlSymbol	    Normal
+    hi link plsqlParen	    Normal
+else
+    hi link plsqlSymbol	    Special
+    hi link plsqlParen	    Special
 endif
+  hi def link plsqlTrigger	    Function
+  hi def link plsqlTypeAttribute    StorageClass
+  hi def link plsqlTodo		    Todo
 
 let b:current_syntax = "plsql"
 

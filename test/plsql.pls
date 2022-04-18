@@ -1,23 +1,22 @@
+().,;
 SELECT e.first_name AS "First Name", e.last_name AS "Last Name"
     , d.department_name AS "Department 
 Name"
     , 'a string with embedded quote ('')' as regq, q'{a string with embedded quote (')}' as qquote
-    , 'a string ending in a quote ''' as regq_end_quote
-    , 123 AS "integer val" , .7 as "trailing dec", 123. as "really an int"
+    , 'a string ending in a quote ''' as "regq_end_quote XXX", 'xxx' AS XXX
+    , 123 AS "integer val" , .7 as "trailing dec", 123. as "really an int but classified float"
     , 123.456 as "float" , 1.27E-2 as "exp not"
--- operator matching sucks up the +/- when followed by \d, but not when followed by .
--- Something about the default word boundary matching. I'm not savvy enough with vim matching
--- rules to overcome it, but it isn't really a problem.
-    , -123 AS "n integer val" , -.7 as "n trailing dec", -123. as "n really an int"
+    -- leading sign is classified as an operator. That works from a logical perspective (unary operator).
+    , -123 AS "n integer val" , -.7 as "n trailing dec", -123. as "n really an int but classified float"
     , -123.456 as "n float" , -1.27E+2 as "n exp not"
-    , +123 AS "p integer val" , +.7 as "p trailing dec", +123. as "p really an int"
+    , +123 AS "p integer val" , +.7 as "p trailing dec", +123. as "p really an int but classified float"
     , +123.456 as "p float" , +1.27E2 as "p exp not"
+-- TODO XXX DEBUG NOTE FIXME 
 FROM hr.employees e
 JOIN hr.departments d
     ON e.department_id = d.department_id
 WHERE e.first_name = 'Bruce' AND e.last_name = 'Lee'
-ORDER BY d.department_name
-;
+ORDER BY d.department_name;
 MERGE INTO xyz t
 USING (
     SELECT abc FROM zala WHERE 1=1 and TO_DATE('12/31/2021','mm/dd/yyyy') < SYSDATE
@@ -33,7 +32,9 @@ CREATE OR
   PACKAGE 
    sample_pkg
     PROCEDURE transform_perl_regexp(p_re VARCHAR2)
-    RETURN VARCHAR2 DETERMINISTIC ;
+    RETURN VARCHAR2
+    DETERMINISTIC
+    ;
 END sample_pkg;
 /
 CREATE OR REPLACE PACKAGE BODY sample_pkg
@@ -94,5 +95,6 @@ BEGIN
 END;
 -- dot words with dquotes
 SELECT X."myObject".get(), X."myObject".COUNT, X."myObject".obscureLocalMethod() 
-FROM a X;
+FROM a X
+;
  -- shows a comment on last line
