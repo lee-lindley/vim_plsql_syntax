@@ -21,6 +21,8 @@ and variable names are cyan. Comments are white and in italic font.
 
 ## Original syntax file with *elflord.vim* color file
 
+Notice the distinction between some SQL keywords and others. 
+
 | Screenshots |
 |:--:|
 | ![screenshot1_original_elflord.gif](images/screenshot1_original_elflord.gif) |
