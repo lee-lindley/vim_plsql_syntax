@@ -5,25 +5,48 @@ Repository includes
     syntax/plsql.vim
     colors/lee.vim
 
+## plsql.vim syntax file
+
 The syntax file replaces the functionality of the *plsql.vim* file that ships with vim (it was last updated
 for Oracle 9). This update adds keywords and syntax through Oracle version 19c.
+
+It also fixes q-quote operator syntax, exponential notation and assorted oddities. It does away
+with trying to separate SQL from PL/SQL keywords unless *plsql_legacy_sql_keywords* is set.
+
+## lee.vim color file
 
 The colors file *lee.vim* is a black background with shades of bold green for the various oracle keyword types, orangish
 for quoted literals and numbers, yellowish green for operators and bright yellow for punctuation. Your program method
 and variable names are cyan. Comments are white and in italic font.
 
-## New syntax file with *lee.vim* color file
+*lee.vim* provides separate
+colors for Numbers/Boolean, Constant (strings) and Character (double quoted names) while the common color files
+combine them.
 
-The default color file *elflord.vim* (and probably others), combines 
-Character, Constant, Number, Float and Boolean into a single color. *lee.vim* provides separate
-colors for Numbers/Boolean, Constant (strings) and Character (double quoted names).
+*lee.vim* folds *Repeat* and *Conditional* groups into *Statement* while the common color files show them in a
+different color.
+
+## New PL/SQL syntax file with *lee.vim* color file
+
 
 | Screenshots |
 |:--:|
 | ![screenshot1.gif](images/screenshot1.gif) |
 | ![screenshot2.gif](images/screenshot2.gif) |
 
-## Original syntax file with *elflord.vim* color file
+## New PL/SQL syntax file (not legacy) with *elflord.vim* color file
+
+SQL and PL/SQL keywords are all the same color. You can choose separate colors for Oracle
+Reserved keywords from Oracle non-Reserved keywords if desired (Statement, Keyword), but we do not try to
+separate SQL and PL/SQL keywords. It was not done with much attention to detail originally, and
+seems more distracting than useful. See next section if you prefer the legacy behavior.
+
+| Screenshots |
+|:--:|
+| ![screenshot1_new_elflord.gif](images/screenshot1_new_elflord.gif) |
+| ![screenshot2_new_elflord.gif](images/screenshot2_new_elflord.gif) |
+
+## Original PL/SQL syntax file with *elflord.vim* color file
 
 Notice the distinction between some SQL keywords and others. 
 
@@ -32,7 +55,10 @@ Notice the distinction between some SQL keywords and others.
 | ![screenshot1_original_elflord.gif](images/screenshot1_original_elflord.gif) |
 | ![screenshot2_original_elflord.gif](images/screenshot2_original_elflord.gif) |
 
-## New syntax file using legacy setting with *elflord.vim* color file
+## New PL/SQL syntax file using legacy setting with *elflord.vim* color file
+
+Much of it matches up with the original with better parsing of literals and
+support for more Oracle syntax and keywords.
 
 ```vim
 :let plsql_legacy_sql_keywords = 1
@@ -44,28 +70,6 @@ Notice the distinction between some SQL keywords and others.
 |:--:|
 | ![screenshot1_new_legacy_elflord.gif](images/screenshot1_new_legacy_elflord.gif) |
 | ![screenshot2_new_legacy_elflord.gif](images/screenshot2_new_legacy_elflord.gif) |
-
-## New syntax file (not legacy) with *elflord.vim* color file
-
-SQL and PL/SQL keywords are all the same color. You can choose separate colors for Oracle
-Reserved keywords from Oracle non-Reserved keywords if desired (Statement, Keyword), but we do not try to
-separate SQL and PL/SQL keywords. It was not done with much attention to detail originally, and
-seems more distracting than useful.
-
-The default color file *elflord.vim* (and probably others), combines 
-Character, Constant, Number, Float and Boolean in a single color. *lee.vim* separates
-Numbers/Boolean, Constant (strings) and Character (double quoted names).
-
-```vim
-:unlet plsql_legacy_sql_keywords 
-" then to reload it...
-:set filetype=plsql
-```
-| Screenshots |
-|:--:|
-| ![screenshot1_new_elflord.gif](images/screenshot1_new_elflord.gif) |
-| ![screenshot2_new_elflord.gif](images/screenshot2_new_elflord.gif) |
-
 
 # Installation
 
@@ -83,7 +87,7 @@ You might want to add the following to your *.vimrc* (or *_vimrc* file on window
 
 ```vim
 syntax enable
-colorschem lee
+colorscheme lee
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
 ```
