@@ -1,6 +1,6 @@
 " Vim syntax file
 " Language: Oracle Procedureal SQL (PL/SQL)
-" Maintainer: vacancy
+" Maintainer: Lee Lindley
 " Previous Maintainer: Jeff Lanzarotta (jefflanzarotta at yahoo dot com)
 " Previous Maintainer: C. Laurence Gonsalves (clgonsal@kami.com)
 " URL: https://github.com/lee-lindley/vim_plsql_syntax
@@ -15,7 +15,7 @@
 "          Austin Ziegler (austin at halostatue dot ca)
 "               Added 8i+ features.
 "
-" To put SQL keywords as functions in legacy style
+" To put SQL keywords as Function group in legacy style
 " let plsql_legacy_sql_keywords = 1
 "
 if exists("b:current_syntax")
