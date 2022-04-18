@@ -12,15 +12,45 @@ The colors file *lee.vim* is a black background with shades of bold green for th
 for quoted literals and numbers, yellowish green for operators and bright yellow for punctuation. Your program method
 and variable names are cyan. Comments are white and in italic font.
 
+## New syntax file with *lee.vim* color file
+
 | Screenshots |
 |:--:|
 | ![screenshot1.gif](images/screenshot1.gif) |
 | ![screenshot2.gif](images/screenshot2.gif) |
 
-You can get more of a flavor for it from PL/SQL code samples on [my blog pages](https://lee-lindley.github.io/)
-as I also have a *rouge* lexer (submitted fork to maintainers)
-that follows mostly the same parsing rules along with a syntax.css
-file for *rouge*/*jekyll* to display it with the same colors as *lee.vim*.
+## Original syntax file with *elflord.vim* color file
+
+| Screenshots |
+|:--:|
+| ![screenshot1_original_elflord.gif](images/screenshot1_original_elflord.gif) |
+| ![screenshot2_original_elflord.gif](images/screenshot2_original_elflord.gif) |
+
+## New syntax file using legacy setting with *elflord.vim* color file
+
+```vim
+:let plsql_legacy_sql_keywords = 1
+" then to reload it...
+:set filetype=plsql
+```
+
+| Screenshots |
+|:--:|
+| ![screenshot1_new_legacy_elflord.gif](images/screenshot1_new_legacy_elflord.gif) |
+| ![screenshot2_new_legacy_elflord.gif](images/screenshot2_new_legacy_elflord.gif) |
+
+## New syntax file (not legacy) with *elflord.vim* color file
+
+```vim
+:unlet plsql_legacy_sql_keywords 
+" then to reload it...
+:set filetype=plsql
+```
+| Screenshots |
+|:--:|
+| ![screenshot1_new_elflord.gif](images/screenshot1_new_elflord.gif) |
+| ![screenshot2_new_elflord.gif](images/screenshot2_new_elflord.gif) |
+
 
 # Installation
 
