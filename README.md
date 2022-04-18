@@ -14,6 +14,10 @@ and variable names are cyan. Comments are white and in italic font.
 
 ## New syntax file with *lee.vim* color file
 
+The default color file *elflord.vim* (and probably others), combines 
+Character, Constant, Number, Float and Boolean into a single color. *lee.vim* provides separate
+colors for Numbers/Boolean, Constant (strings) and Character (double quoted names).
+
 | Screenshots |
 |:--:|
 | ![screenshot1.gif](images/screenshot1.gif) |
@@ -42,6 +46,15 @@ Notice the distinction between some SQL keywords and others.
 | ![screenshot2_new_legacy_elflord.gif](images/screenshot2_new_legacy_elflord.gif) |
 
 ## New syntax file (not legacy) with *elflord.vim* color file
+
+SQL and PL/SQL keywords are all the same color. You can choose separate colors for Oracle
+Reserved keywords from Oracle non-Reserved keywords if desired (Statement, Keyword), but we do not try to
+separate SQL and PL/SQL keywords. It was not done with much attention to detail originally, and
+seems more distracting than useful.
+
+The default color file *elflord.vim* (and probably others), combines 
+Character, Constant, Number, Float and Boolean in a single color. *lee.vim* separates
+Numbers/Boolean, Constant (strings) and Character (double quoted names).
 
 ```vim
 :unlet plsql_legacy_sql_keywords 
