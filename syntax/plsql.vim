@@ -1,10 +1,10 @@
 " Vim syntax file
 " Language: Oracle Procedureal SQL (PL/SQL)
-" Maintainer: Lee Lindley
+" Maintainer: Lee Lindley (lee dot lindley at gmail dot com)
 " Previous Maintainer: Jeff Lanzarotta (jefflanzarotta at yahoo dot com)
 " Previous Maintainer: C. Laurence Gonsalves (clgonsal@kami.com)
 " URL: https://github.com/lee-lindley/vim_plsql_syntax
-" Last Change: April 17, 2022   
+" Last Change: April 19, 2022   
 " History  Lee Lindley (lee dot lindley at gmail dot com)
 "               updated to 19c keywords. refined quoting. 
 "               separated reserved, non-reserved keywords and functions
