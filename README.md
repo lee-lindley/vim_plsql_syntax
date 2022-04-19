@@ -68,8 +68,8 @@ support for more Oracle syntax and keywords.
 
 | Screenshots - 3 |
 |:--:|
-| ![screenshot1_new_lee.gif](images/screenshot1_new_lee.gif) |
-| ![screenshot2_new_lee.gif](images/screenshot2_new_lee.gif) |
+| ![screenshot1_new_legacy_lee.gif](images/screenshot1_new_legacy_lee.gif) |
+| ![screenshot2_new_legacy_lee.gif](images/screenshot2_new_legacy_lee.gif) |
 
 ## New PL/SQL syntax file with *elflord.vim* color file
 
