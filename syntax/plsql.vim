@@ -22,6 +22,10 @@ if exists("b:current_syntax")
   finish
 endif
 
+" this file uses line continuations
+let s:cpo_sav = &cpo
+set cpo&vim
+
 " Todo.
 syn keyword plsqlTodo TODO FIXME XXX DEBUG NOTE
 syn cluster plsqlCommentGroup contains=plsqlTodo
@@ -470,7 +474,7 @@ syn keyword plsqlFunction PREDICTION PREDICTION_BOUNDS PREDICTION_COST PREDICTIO
 syn keyword plsqlFunction PREDICTION_SET PRESENTNNV PRESENTV PREVIOUS RANK RATIO_TO_REPORT RAWTOHEX
 syn keyword plsqlFunction RAWTONHEX REFTOHEX REGEXP_COUNT REGEXP_INSTR REGEXP_REPLACE REGEXP_SUBSTR
 syn keyword plsqlFunction REMAINDER ROUND ROUND ROWIDTOCHAR ROWIDTONCHAR ROW_NUMBER RPAD RTRIM
-syn keyword plsqlFunction SCN_TO_TIMESTAMP SESSIONTIMEZONE SET SIGN SIN SINH SOUNDEX SQRT STANDARD_HASH
+syn keyword plsqlFunction SCN_TO_TIMESTAMP SESSIONTIMEZONE SIGN SIN SINH SOUNDEX SQRT STANDARD_HASH
 syn keyword plsqlFunction STATS_BINOMIAL_TEST STATS_CROSSTAB STATS_F_TEST STATS_KS_TEST STATS_MODE STATS_MW_TEST
 syn keyword plsqlFunction STATS_ONE_WAY_ANOVA STATS_WSR_TEST STDDEV STDDEV_POP STDDEV_SAMP SUBSTR SUM
 syn keyword plsqlFunction SYSDATE SYSTIMESTAMP SYS_CONNECT_BY_PATH SYS_CONTEXT SYS_DBURIGEN SYS_EXTRACT_UTC
@@ -623,8 +627,6 @@ else
   syn match plsqlErrInBracket contained "[);{}]"
 endif
 
-
-
 " Syntax Synchronizing
 syn sync minlines=1000 maxlines=2000
 
@@ -676,5 +678,8 @@ endif
   hi def link plsqlTodo		    Todo
 
 let b:current_syntax = "plsql"
+let &cpo = s:cpo_sav
+unlet! s:cpo_sav
+
 
 " vim: ts=8 sw=2
