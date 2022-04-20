@@ -36,6 +36,10 @@ closer to what you use for *Normal*. *lee.vim* makes them Cyan which is close to
 *lee.vim* folds *Repeat* and *Conditional* groups into *Statement* while the common color files show them in a
 different color.
 
+I use the same color scheme via 
+a [ruby-rouge plsql lexer](https://lee-lindley.github.io/plsql/sql/2022/03/20/Ruby-Rouge-Lexer-PLSQL.html) 
+in [my blog](https://lee-lindley.github.io/).
+
 # Screenshots
 
 ## New PL/SQL syntax file with *lee.vim* color file
