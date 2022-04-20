@@ -10,7 +10,7 @@ if exists("syntax_on")
   syntax reset
 endif
 let g:colors_name = "lee"
-hi Normal	                    ctermfg=Cyan        guifg=#19D9FF   
+hi Normal	                    ctermfg=Cyan        guifg=#19D9FF   guibg=Black
 "guibg=black
 " .s, .sl, .sx Literal.String
 hi Constant	    term=underline	ctermfg=LightRed	guifg=#EC7600
