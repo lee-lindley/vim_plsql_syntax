@@ -4,10 +4,12 @@
 " Previous Maintainer: Jeff Lanzarotta (jefflanzarotta at yahoo dot com)
 " Previous Maintainer: C. Laurence Gonsalves (clgonsal@kami.com)
 " URL: https://github.com/lee-lindley/vim_plsql_syntax
-" Last Change: April 19, 2022   
+" Last Change: April 25, 2022   
 " History  Lee Lindley (lee dot lindley at gmail dot com)
 "               updated to 19c keywords. refined quoting. 
 "               separated reserved, non-reserved keywords and functions
+"               revised folding, giving up on procedure folding due to issue
+"               with multiple ways to enter <begin>.
 "          Eugene Lysyonok (lysyonok at inbox ru)
 "               Added folding.
 "          Geoff Evans & Bill Pribyl (bill at plnet dot org)
@@ -18,6 +20,19 @@
 " To put SQL keywords as Function group in legacy style
 " let plsql_legacy_sql_keywords = 1
 "
+" To enable folding (It does setlocal foldmethod=syntax)
+" let plsql_fold = 1
+"
+" If you want to try procedure folding, it has issues
+" let plsql_procedure_fold = 1
+"
+"     From my vimrc file -- turn syntax and syntax folding on,
+"     associate file suffixes as plsql, open all the folds on file open
+" let plsql_fold = 1
+" au Syntax plsql normal zR
+" au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
+" au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
+
 if exists("b:current_syntax")
   finish
 endif
@@ -51,22 +66,24 @@ endif
 syn match   plsqlSymbol "[;,.()]"
 
 " Operators. and words that would be something else if not in operator mode
-"syn match   plsqlOperator "\(+\|-\|\*\|/\|=\|<\|>\|@\|\*\*\|!=\|\~=\)"
-"syn match   plsqlOperator "\(^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\"\)"
 syn match   plsqlOperator "[-+*/=<>@"]"
-syn match   plsqlOperator "\%\(^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\*\*\|!=\|\~=\)"
+syn match   plsqlOperator "\%\(\^=\|<=\|>=\|:=\|=>\|\.\.\|||\|<<\|>>\|\*\*\|!=\|\~=\)"
 syn match   plsqlOperator "\<\%\(NOT\|AND\|OR\|LIKE\|BETWEEN\|IN\)\>"
 syn match   plsqlBooleanLiteral "\<NULL\>"
-syn match   plsqlReserved "\<IS\>"
-syn match   plsqlOperator "\<IS\%\(\s\|\n\)\+\%\(NOT\%\(\s\|\n\)\+\)\?NULL\>"
+syn match   plsqlOperator "\<IS\\_s\+\%\(NOT\_s\+\)\?NULL\>"
 "
-" conditional compilation Preprocessor directives
+" conditional compilation Preprocessor directives and sqlplus define sigil
 syn match plsqlPseudo "$[$a-z][a-z0-9$_#]*"
+syn match plsqlPseudo "&"
 
 syn match plsqlReserved "\<\%\(CREATE\|THEN\|UPDATE\|INSERT\|SET\)\>"
 syn match plsqlKeyword "\<\%\(REPLACE\|PACKAGE\|FUNCTION\|PROCEDURE\|TYPE|BODY\|WHEN\|MATCHED\)\>"
-syn match plsqlReserved "\<CREATE\%\(\s\|\n\)\+\%\(OR\%\(\s\|\n\)\+REPLACE\%\(\s\|\n\)\+\)\?\%\(PACKAGE\|FUNCTION\|PROCEDURE\|TYPE\)\%\(\%\(\s\|\n\)\+BODY\)\?"
-syn match plsqlReserved "\<WHEN\%\(\s\|\n\)\+\%\(NOT\%\(\s\|\n\)\+\)\?MATCHED\%\(\s\|\n\)\+THEN\%\(\s\|\n\)\+\%\(UPDATE\|INSERT\)\%\(\%\(\s\|\n\)\+SET\)\?"
+syn region plsqlUpdate 
+    \ matchgroup=plsqlReserved 
+    \ start="\<UPDATE\>"
+    \ end="\<SET\>"
+    \ contains=@plsqlIdentifiers
+syn match plsqlReserved "\<WHEN\_s\+\%\(NOT\_s\+\)\?MATCHED\_s\+THEN\_s\+\%\(UPDATE\|INSERT\)\%\(\_s\+SET\)\?"
 
 "
 " Oracle's non-reserved keywords
@@ -86,7 +103,7 @@ syn keyword plsqlKeyword AUDIT AUTHENTICATED AUTHENTICATION AUTHID AUTHORIZATION
 syn keyword plsqlKeyword AUTOEXTEND AUTOMATIC AUTO_LOGIN AUTO_REOPTIMIZE AVAILABILITY AVCACHE_OP AVERAGE_RANK
 syn keyword plsqlKeyword AVG AVMDX_OP AVRO AV_AGGREGATE AV_CACHE AW BACKGROUND BACKINGFILE BACKUP BAND_JOIN
 syn keyword plsqlKeyword BASIC BASICFILE BATCH BATCHSIZE BATCH_TABLE_ACCESS_BY_ROWID BECOME BEFORE
-syn keyword plsqlKeyword BEGIN BEGINNING BEGIN_OUTLINE_DATA BEHALF BEQUEATH BFILENAME BIGFILE BINARY
+syn keyword plsqlKeyword BEGINNING BEGIN_OUTLINE_DATA BEHALF BEQUEATH BFILENAME BIGFILE BINARY
 syn keyword plsqlKeyword BINARY_DOUBLE_INFINITY BINARY_DOUBLE_NAN BINARY_FLOAT_INFINITY BINARY_FLOAT_NAN
 syn keyword plsqlKeyword BINDING BIND_AWARE BIN_TO_NUM BITAND BITMAP BITMAPS BITMAP_AND BITMAP_BIT_POSITION
 syn keyword plsqlKeyword BITMAP_BUCKET_NUMBER BITMAP_CONSTRUCT_AGG BITMAP_COUNT BITMAP_OR_AGG BITMAP_TREE
@@ -94,7 +111,7 @@ syn keyword plsqlKeyword BITOR BITS BITXOR BIT_AND_AGG BIT_OR_AGG BIT_XOR_AGG BL
 syn keyword plsqlKeyword BLOCKS BLOCKSIZE BLOCK_RANGE BOOL BOOTSTRAP BOTH BOUND BRANCH BREADTH
 syn keyword plsqlKeyword BROADCAST BSON BUFFER BUFFER_CACHE BUFFER_POOL BUILD BULK BUSHY_JOIN BYPASS_RECURSIVE_CHECK
 syn keyword plsqlKeyword BYPASS_UJVC CACHE CACHE_CB CACHE_INSTANCES CACHE_TEMP_TABLE CACHING CALCULATED
-syn keyword plsqlKeyword CALL CALLBACK CANCEL CAPACITY CAPTION CAPTURE CARDINALITY CASCADE CASE CAST
+syn keyword plsqlKeyword CALL CALLBACK CANCEL CAPACITY CAPTION CAPTURE CARDINALITY CASCADE CAST
 syn keyword plsqlKeyword CATALOG_DBLINK CATEGORY CDB$DEFAULT CDB_HTTP_HANDLER CEIL CELLMEMORY CELL_FLASH_CACHE
 syn keyword plsqlKeyword CERTIFICATE CFILE CHAINED CHANGE CHANGE_DUPKEY_ERROR_INDEX CHARTOROWID CHAR_CS
 syn keyword plsqlKeyword CHECKPOINT CHECKSUM CHECK_ACL_REWRITE CHILD CHOOSE CHR CHUNK CLASS CLASSIFICATION
@@ -141,7 +158,8 @@ syn keyword plsqlKeyword DUMP DUPLICATE DUPLICATED DV DYNAMIC DYNAMIC_SAMPLING D
 syn keyword plsqlKeyword EACH EDITION EDITIONABLE EDITIONING EDITIONS ELAPSED_TIME ELEMENT ELIMINATE_JOIN
 syn keyword plsqlKeyword ELIMINATE_OBY ELIMINATE_OUTER_JOIN ELIMINATE_SQ ELIM_GROUPBY EM EMPTY EMPTY_BLOB
 syn keyword plsqlKeyword EMPTY_CLOB ENABLE ENABLE_ALL ENABLE_PARALLEL_DML ENABLE_PRESET ENCODE ENCODING
-syn keyword plsqlKeyword ENCRYPT ENCRYPTION END END_OUTLINE_DATA ENFORCE ENFORCED ENQUEUE ENTERPRISE
+syn keyword plsqlKeyword ENCRYPT ENCRYPTION
+syn keyword plsqlKeyword END_OUTLINE_DATA ENFORCE ENFORCED ENQUEUE ENTERPRISE
 syn keyword plsqlKeyword ENTITYESCAPING ENTRY EQUIPART EQUIVALENT ERROR ERRORS ERROR_ARGUMENT ERROR_ON_OVERLAP_TIME
 syn keyword plsqlKeyword ESCAPE ESTIMATE EVAL EVALNAME EVALUATE EVALUATION EVEN EVENTS EVERY EXCEPTION
 syn keyword plsqlKeyword EXCEPTIONS EXCHANGE EXCLUDE EXCLUDING EXECUTE EXEMPT EXISTING EXISTSNODE EXP
@@ -166,7 +184,7 @@ syn keyword plsqlKeyword HIER_CAPTION HIER_CHILDREN HIER_CHILD_COUNT HIER_COLUMN
 syn keyword plsqlKeyword HIER_DESCRIPTION HIER_HAS_CHILDREN HIER_LAG HIER_LEAD HIER_LEVEL HIER_MEMBER_NAME
 syn keyword plsqlKeyword HIER_MEMBER_UNIQUE_NAME HIER_ORDER HIER_PARENT HIER_WINDOW HIGH HINTSET_BEGIN
 syn keyword plsqlKeyword HINTSET_END HOST HOT HOUR HOURS HTTP HWM_BROKERED HYBRID ID IDENTIFIER IDENTITY
-syn keyword plsqlKeyword IDGENERATORS IDLE IDLE_TIME IF IGNORE IGNORE_OPTIM_EMBEDDED_HINTS IGNORE_ROW_ON_DUPKEY_INDEX
+syn keyword plsqlKeyword IDGENERATORS IDLE IDLE_TIME IGNORE IGNORE_OPTIM_EMBEDDED_HINTS IGNORE_ROW_ON_DUPKEY_INDEX
 syn keyword plsqlKeyword IGNORE_WHERE_CLAUSE ILM IMMEDIATE IMMUTABLE IMPACT IMPORT INACTIVE INACTIVE_ACCOUNT_TIME
 syn keyword plsqlKeyword INCLUDE INCLUDES INCLUDE_VERSION INCLUDING INCOMING INCR INCREMENT INCREMENTAL
 syn keyword plsqlKeyword INDENT INDEXED INDEXES INDEXING INDEXTYPE INDEXTYPES INDEX_ASC INDEX_COMBINE
@@ -431,14 +449,15 @@ syn keyword plsqlKeyword XMLTOKENSET XMLTRANSFORM XMLTRANSFORMBLOB XMLTSET_DML_E
 syn keyword plsqlKeyword XPATHTABLE XS XS_SYS_CONTEXT X_DYN_PRUNE YEARS YES ZONEMAP
 
 " Some of Oracle's Reserved keywords.
-syn keyword plsqlReserved ACCESSIBLE AGENT ALL ALTER ANY AS ASC BFILE_BASE BLOB_BASE BY
+syn keyword plsqlReserved ACCESSIBLE AGENT ALL ALTER ANY ASC BFILE_BASE BLOB_BASE BY
+"syn match   plsqlReserved "\<AS\>"
 syn keyword plsqlReserved C CALLING CHARSET CHARSETFORM CHARSETID CHAR_BASE CHECK CLOB_BASE CLUSTER
 syn keyword plsqlReserved COLLATE COMPILED COMPRESS CONNECT CONNECT_BY_ROOT CONSTRUCTOR CUSTOMDATUM
-syn keyword plsqlReserved DATE_BASE DEFAULT DESC DISTINCT DROP DURATION ELSE ELSIF EXCEPT EXCLUSIVE
+syn keyword plsqlReserved DATE_BASE DEFAULT DESC DISTINCT DROP DURATION EXCEPT EXCLUSIVE
 syn match plsqlReserved "\<DELETE\>"
-syn keyword plsqlReserved EXIT FIXED FOR FORALL FROM GENERAL GRANT GROUP HAVING IDENTIFIED INDEX
+syn keyword plsqlReserved EXIT FIXED FROM GENERAL GRANT GROUP HAVING IDENTIFIED INDEX
 syn match plsqlReserved "\<EXISTS\>"
-syn keyword plsqlReserved INDICES INTERFACE INTERSECT INTO LARGE LIMITED LOCK LOOP MAXLEN
+syn keyword plsqlReserved INDICES INTERFACE INTERSECT INTO LARGE LIMITED LOCK MAXLEN
 syn keyword plsqlReserved MINUS MODE NOCOMPRESS NOWAIT NUMBER_BASE OCICOLL OCIDATE OCIDATETIME
 syn keyword plsqlReserved OCIDURATION OCIINTERVAL OCILOBLOCATOR OCINUMBER OCIRAW OCIREF OCIREFCURSOR
 syn keyword plsqlReserved OCIROWID OCISTRING OCITYPE OF ON OPTION ORACLE ORADATA ORDER ORLANY ORLVARY
@@ -447,7 +466,7 @@ syn keyword plsqlReserved PRAGMA PRIOR PUBLIC RAISE RECORD RELIES_ON REM RENAME 
 syn keyword plsqlReserved SB1 SB2 SELECT SEPARATE SHARE SHORT SIZE SIZE_T SPARSE SQLCODE SQLDATA
 syn keyword plsqlReserved SQLNAME SQLSTATE STANDARD START STORED STRUCT STYLE SYNONYM TABLE TDO
 syn keyword plsqlReserved TRANSACTIONAL TRIGGER UB1 UB4 UNION UNIQUE UNSIGNED UNTRUSTED VALIST
-syn keyword plsqlReserved VALUES VARIABLE VIEW VOID WHERE WHILE WITH
+syn keyword plsqlReserved VALUES VARIABLE VIEW VOID WHERE WITH
 
 " PL/SQL and SQL functions.
 syn keyword plsqlFunction ABS ACOS ADD_MONTHS APPROX_COUNT APPROX_COUNT_DISTINCT APPROX_COUNT_DISTINCT_AGG
@@ -500,19 +519,19 @@ syn match   plsqlFunction "\.NEXT\>"hs=s+1
 if exists("plsql_legacy_sql_keywords")
 " Some of Oracle's SQL keywords.
 syn keyword plsqlSQLKeyword ABORT ACCESS ACCESSED ADD AFTER ALL ALTER AND ANY
-syn keyword plsqlSQLKeyword AS ASC ATTRIBUTE AUDIT AUTHORIZATION AVG BASE_TABLE
+syn keyword plsqlSQLKeyword ASC ATTRIBUTE AUDIT AUTHORIZATION AVG BASE_TABLE
 syn keyword plsqlSQLKeyword BEFORE BETWEEN BY CASCADE CAST CHECK CLUSTER
 syn keyword plsqlSQLKeyword CLUSTERS COLAUTH COLUMN COMMENT COMPRESS CONNECT
-syn keyword plsqlSQLKeyword CONSTRAINT CRASH CREATE CURRENT DATA DATABASE
+syn keyword plsqlSQLKeyword CONSTRAINT CRASH CURRENT DATA DATABASE
 syn keyword plsqlSQLKeyword DATA_BASE DBA DEFAULT DELAY DELETE DESC DISTINCT
-syn keyword plsqlSQLKeyword DROP DUAL ELSE EXCLUSIVE EXISTS EXTENDS EXTRACT
+syn keyword plsqlSQLKeyword DROP DUAL EXCLUSIVE EXISTS EXTENDS EXTRACT
 syn keyword plsqlSQLKeyword FILE FORCE FOREIGN FROM GRANT GROUP HAVING HEAP
 syn keyword plsqlSQLKeyword IDENTIFIED IDENTIFIER IMMEDIATE IN INCLUDING
 syn keyword plsqlSQLKeyword INCREMENT INDEX INDEXES INITIAL INSERT INSTEAD
-syn keyword plsqlSQLKeyword INTERSECT INTO INVALIDATE IS ISOLATION KEY LIBRARY
+syn keyword plsqlSQLKeyword INTERSECT INTO INVALIDATE ISOLATION KEY LIBRARY
 syn keyword plsqlSQLKeyword LIKE LOCK MAXEXTENTS MINUS MODE MODIFY MULTISET
 syn keyword plsqlSQLKeyword NESTED NOAUDIT NOCOMPRESS NOT NOWAIT OF OFF OFFLINE
-syn keyword plsqlSQLKeyword ON ONLINE OPERATOR OPTION OR ORDER ORGANIZATION
+syn keyword plsqlSQLKeyword ON ONLINE OPERATOR OPTION ORDER ORGANIZATION
 syn keyword plsqlSQLKeyword PCTFREE PRIMARY PRIOR PRIVATE PRIVILEGES PUBLIC
 syn keyword plsqlSQLKeyword QUOTA RELEASE RENAME REPLACE RESOURCE REVOKE ROLLBACK
 syn keyword plsqlSQLKeyword ROW ROWLABEL ROWS SCHEMA SELECT SEPARATE SESSION SET
@@ -549,35 +568,30 @@ if exists("plsql_highlight_triggers")
   syn keyword plsqlTrigger INSERTING UPDATING DELETING
 endif
 
-" Conditionals.
-syn keyword plsqlConditional ELSIF ELSE IF
-syn match   plsqlConditional "\<END\s\+IF\>"
+" so can not contain it for folding
+syn match plsqlBEGIN "\<BEGIN\>"
+syn match plsqlEND "\<END\>"
+syn match plsqlISAS "\<\%\(IS\|AS\)\>"
 
-" Loops.
-syn keyword plsqlRepeat FOR LOOP WHILE FORALL
-syn match   plsqlRepeat "\<END\s\+LOOP\>"
 
 " Various types of comments.
-if exists("c_comment_strings")
-  syntax match plsqlCommentSkip contained "^\s*\*\($\|\s\+\)"
-  syntax region plsqlCommentString contained start=+L\="+ skip=+\\\\\|\\"+ end=+"+ end=+\*/+me=s-1 contains=plsqlCommentSkip
-  syntax region plsqlComment2String contained start=+L\="+ skip=+\\\\\|\\"+ end=+"+ end="$"
-  syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend contains=@plsqlCommentGroup,plsqlComment2String,plsqlCharLiteral,plsqlBooleanLiteral,plsqlNumbersCom,plsqlSpaceError
-  syntax region plsqlComment
-    \ start="/\*" end="\*/"
-    \ extend
-    \ contains=@plsqlCommentGroup,plsqlComment2String,plsqlCharLiteral,plsqlBooleanLiteral,plsqlNumbersCom,plsqlSpaceError
+  syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError
+if exists("plsql_fold")
+    syntax region plsqlComment
+        \ start="/\*" end="\*/"
+        \ extend
+        \ contains=@plsqlCommentGroup,plsqlSpaceError
+        \ fold
 else
-  syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend contains=@plsqlCommentGroup,plsqlSpaceError
-  syntax region plsqlComment
-    \ start="/\*" end="\*/"
-    \ extend
-    \ contains=@plsqlCommentGroup,plsqlSpaceError
+    syntax region plsqlComment
+        \ start="/\*" end="\*/"
+        \ extend
+        \ contains=@plsqlCommentGroup,plsqlSpaceError
 endif
+syn cluster plsqlCommentAll contains=plsqlCommentL,plsqlComment
 
 syn sync ccomment plsqlComment
 syn sync ccomment plsqlCommentL
-
 
 " To catch unterminated string literals.
 syn match   plsqlStringError "'.*$"
@@ -585,26 +599,34 @@ syn match   plsqlStringError "'.*$"
 " Various types of literals.
 " the + and - get sucked up as operators. Not sure how to take precedence here. Something to do with word boundaries.
 " most other syntax files do not try to includ +/- in the number token, so leave them as unary operators
-"syn match   plsqlNumbers transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
-"syn match   plsqlNumbersCom contained transparent "\<[+-]\=\d\|[+-]\=\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
-"syn match   plsqlIntLiteral contained "[+-]\=\d\+"
-"syn match   plsqlFloatLiteral contained "[+-]\=\d\+\.\d*"
-"syn match   plsqlFloatLiteral contained "[+-]\=\d*\.\d*"
 syn match   plsqlNumbers transparent "\<\d\|\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
 syn match   plsqlNumbersCom contained transparent "\<\d\|\.\d" contains=plsqlIntLiteral,plsqlFloatLiteral
 syn match   plsqlIntLiteral contained "\d\+"
 syn match   plsqlFloatLiteral contained "\d\+\.\%\(\d\+\%\([eE][+-]\?\d\+\)\?\)\?"
 syn match   plsqlFloatLiteral contained "\.\%\(\d\+\%\([eE][+-]\?\d\+\)\?\)"
+
 " double quoted strings in SQL are database object names. Should be a subgroup of Normal.
 " We will use Character group as a proxy for that so color can be chosen close to Normal
-syn region plsqlCharLiteral	matchgroup=plsqlOperator start=+n\?"+     end=+"+
+syn region plsqlQuotedIdentifier	matchgroup=plsqlOperator start=+n\?"+     end=+"+ keepend extend
+syn cluster plsqlIdentifiers contains=plsqlIdentifier,plsqlQuotedIdentifier
+
 " quoted string literals
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+
-syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+
+if exists("plsql_fold")
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ fold
+else
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ 
+endif
+
 syn keyword plsqlBooleanLiteral TRUE FALSE 
 
 " A type-attribute is really a type.
@@ -615,71 +637,238 @@ syn match plsqlAttribute "%\(BULK_EXCEPTIONS\|BULK_ROWCOUNT\|ISOPEN\|FOUND\|NOTF
 
 " This'll catch mis-matched close-parens.
 syn cluster plsqlParenGroup contains=plsqlParenError,@plsqlCommentGroup,plsqlCommentSkip,plsqlIntLiteral,plsqlFloatLiteral,plsqlNumbersCom
-if exists("c_no_bracket_error")
-  syn region plsqlParen transparent start='(' end=')' contains=ALLBUT,@plsqlParenGroup
-  syn match plsqlParenError ")"
-  syn match plsqlErrInParen contained "[{}]"
-else
+
+if exists("c_bracket_error")
   syn region plsqlParen transparent start='(' end=')' contains=ALLBUT,@plsqlParenGroup,plsqlErrInBracket
   syn match plsqlParenError "[\])]"
   syn match plsqlErrInParen contained "[{}]"
   syn region plsqlBracket transparent start='\[' end=']' contains=ALLBUT,@plsqlParenGroup,plsqlErrInParen
   syn match plsqlErrInBracket contained "[);{}]"
+else
+  "syn region plsqlParen transparent start='(' end=')' contains=ALLBUT,@plsqlParenGroup,@plsqlProcedureGroup,plsqlBlock,plsqlBlockCont,plsqlPackage,plsqlProcedureJava
+  syn region plsqlParen transparent start='(' end=')' contains=ALLBUT,@plsqlParenGroup,@plsqlFoldingGroupIgnore,plsqlErrInParen
+  syn match plsqlParenError ")"
+  syn match plsqlErrInParen contained "[{}]"
 endif
 
-" Syntax Synchronizing
-syn sync minlines=1000 maxlines=2000
+syn match plsqlReserved "\<BODY\>"
+syn match plsqlReserved "\<CREATE\_s\+\%\(OR\_s\+REPLACE\_s\+\)\?"
+" Loops.
+syn match   plsqlRepeat "\<\%\(FOR\|WHILE\|LOOP\|FORALL\)\>"
+syn match   plsqlRepeat "\<END\_s\+LOOP\>"
+syn match plsqlConditional "\<\%\(ELSIF\|IF\|ELSE\)\>"
+"syn match plsqlConditional "\<END\>\_s\+\<IF\>"
+syn match plsqlCase "\<CASE\>"
+"syn match plsqlCase "\<END\>\s_\+\<CASE\>"
 
+if exists("plsql_fold")
+    setlocal foldmethod=syntax
+    syn sync fromstart
+
+    syn cluster plsqlFoldingGroupIgnore contains=plsqlProcedureDeclaration
+
+    "syntax match plsqlWhiteSpaceGroup "\_s\+" contained transparent
+
+
+  if exists("plsql_procedure_fold")
+  " this fails when a begin/end block is in a procedure. Unable to figure out why. - Lee
+
+    syntax region plsqlProcedure
+        "\ start="\(create\(\_s\+or\_s\+replace\)\?\_s\+\)\?\<\(procedure\|function\)\>\_s\+\z([a-z][a-z0-9$_#]*\)"
+        \ start="\(create\(\_s\+or\_s\+replace\)\?\_s\+\)\?\<\(procedure\|function\)\>\_s\+\z([a-z][a-z0-9$_#]*\)\([^;]\|\n\)\{-}\(\_s\+\<\(is\|as\)\>\)\@="
+        \ end="\(\<end\>\(\_s\+\z1\)\?\_s*;\)"
+        \ fold
+        \ extend
+        \ transparent
+        \ keepend 
+        \ contains=plsqlProcedureDeclaration,plsqlProcedureBlock,@plsqlCommentAll,plsqlKeyword,plsqlReserved,plsqlTypeAttribute,plsqlStorage
+ 
+    syntax region plsqlProcedureDeclaration
+        \ transparent
+        \ fold
+        "\ start="\<\(is\|as\)\>\(\(\_.\)\{-}\<begin\>\)\@="
+        \ start="\<\(is\|as\)\>"
+        \ end="\(\_s\+\<begin\>\)\@="
+        \ nextgroup=plsqlProcedureBlock
+        \ contained
+        \ contains=ALLBUT,plsqlBlockCont,plsqlBlock,plsqlErrInBracket,plsqlPackage,plsqlProcedureDeclaration
+    ",plsqlProcedureBlock
+        \ keepend 
+        "\ extend
+" must have keepend which is weird because it is 0 lenght
+        " ,plsqlEnd,plsqlISAS
+    
+    syntax region plsqlProcedureBlock
+        \ start="\<begin\>"
+        "\ skip="\_s\+\<begin\>\_.\{-}\<end\>\_s*;"
+        \ matchgroup=NONE
+        \ end="\(\<end\>\(\_s\+\(if\|loop\|case\)\@![a-z][a-z0-9$_#]*\)\?\_s*;\)"
+        "\ end="\(\<end\>\)\@="
+        \ fold
+        \ contained
+        \ transparent
+        \ keepend
+        "\ extend
+        \ contains=ALLBUT,plsqlPackage,plsqlProcedure,plsqlProcedureBlock,plsqlProcedureDeclaration,plsqlProcedureJava,plsqlBlock
+
+    "syn cluster plsqlProcedureGroup contains=plsqlProcedure,plsqlProcedureDeclaration,plsqlProcedureBlock
+    syn cluster plsqlProcedureGroup contains=plsqlProcedure,plsqlProcedureDeclaration,plsqlProcedureBlock
+
+    " for inside packages
+    syn region plsqlProcedureSpec
+        \ start="\(procedure\|function\)\(\([^;]\|\n\)\{-}\<\(is\|as\)\>\)\@!"
+        "\ start="\(procedure\|function\)\(\([^;]\|\n\)\{-}\<\(is\|as\)\>\)\@!\(\_.*;\)\@="
+        \ end=";"
+        \ keepend extend
+        \ contains=@plsqlIdentifiers,plsqlKeyword,plsqlReserved,@plsqlCommentAll,plsqlParen
+        \ transparent
+    
+    syntax region plsqlBlockCont
+        \ transparent
+        \ start="\<begin\>"
+        \ end="\<end\>\_s*;"
+        \ fold
+        \ extend
+        \ contained
+        \ contains=ALLBUT,@plsqlProcedureGroup,plsqlPackage,plsqlErrInBracket,PlsqlProcedureJava,plsqlBlock
+        \ keepend
+        "\ end="\<end\>\_s*\;"
+
+    syntax region plsqlProcedureJava
+      \ matchgroup=NONE
+      \ start="\(\/\*\(\(\*\/\)\@!\_.\)*\*\/\_s*\)\?\(\(\(overriding\_s*\)\?member\|constructor\|static\)\_s*\)\?\<\(procedure\|function\)\>\_s*\(\k*\)\_[^;]\{-}\<\(is\|as\)\>\_s*language\_s*java\_s*name"
+      \ matchgroup=plsqlStringLiteral
+      \ end="'\_[^']*'\_s*;"
+      \ keepend extend
+      \ fold
+      \ contains=ALLBUT,plsqlProcedure,plsqlProcedureDeclaration,plsqlProcedureBlock,plsqlBlockCont,plsqlBlock,plsqlProcedureJava,plsqlErrInBracket,plsqlStringLiteral
+    
+    
+"    syntax region plsqlPackage
+"        \ start="\<create\>\_s\+\(or\_s\+replace\_s\+\)\?package\_s\+\(body\_s\+\)\?\z([a-z][a-z0-9$_#]*\)\>"
+"        \ matchgroup=plsqlEnd
+"        \ end="\<end\>\(\%\(\_s\+\z1\)\?\_s*;\)\@="
+"        \ fold
+"        \ transparent
+"        \ keepend extend
+"        \ contains=plsqlProcedure,plsqlBlockCont,@plsqlCommentAll,plsqlKeyword,plsqlReserved,@plsqlIdentifiers
+"        "\ contains=ALLBUT,plsqlPackage,plsqlProcedureDeclaration,plsqlBlock,plsqlConditionalBlock,plsqlLoopBlock,plsqlCaseBlock
+    
+    if exists("plsql_syntax_test_flag") 
+      hi plsqlProcedureDeclaration guifg='blue'
+      hi plsqlProcedureBlock guifg='red'
+      hi plsqlProcedure guifg='green'
+      hi plsqlCaseBlock guifg='pink'
+      hi plsqlBlock NONE
+    else
+      hi plsqlPackage NONE
+      hi plsqlProcedureDeclaration NONE
+      hi plsqlProcedureBlock NONE
+      hi plsqlProcedure NONE
+      hi plsqlBlock NONE
+      hi plsqlCaseBlock NONE
+    endif
+
+  " end plsql_procedure_fold
+  endif
+
+    syntax region plsqlBlock
+        \ start="\<begin\>"
+        "\ end="\<end\>\_s*\;"
+        \ end="\<end\>\(\_s\+\(if\|loop\|case\)\@![a-z][a-z0-9$_#]*\)\?\_s*;"
+        \ fold
+        \ transparent
+        \ contains=ALLBUT,@plsqlProcedureGroup,plsqlPackage,plsqlErrInBracket,PlsqlProcedureJava
+        \ keepend 
+        \ extend
+
+    syn region plsqlCaseBlock
+        \ transparent
+        \ start="\<case\>\(\_s*;\)\@!"
+        \ end="\<end\>\(\_s\+case\_s*;\)\?"
+        \ fold
+        \ contains=ALLBUT,@plsqlProcedureGroup,plsqlPackage,plsqlErrInBracket,PlsqlProcedureJava
+        \ keepend 
+        \ extend
+        "\ contained
+
+    syntax region plsqlLoopBlock
+        \ transparent
+        \ start="\<loop\>\(\_s*;\)\@!"
+        \ end="\<end\>\(\_s\+\<loop\>\)\?\_s*;"
+        \ fold
+        \ keepend extend
+        \ contained
+        \ contains=ALLBUT,@plsqlProcedureGroup,plsqlPackage,plsqlErrInBracket,PlsqlProcedureJava
+    
+    " Conditionals.
+    syn region plsqlConditionalBlock
+        \ transparent
+        \ start="\<if\>\(\_s*;\)\@!"
+        \ end="\<end\>\_s\+\<if\>\_s*;"
+        \ fold
+        \ keepend extend
+        \ contained
+        \ contains=ALLBUT,@plsqlProcedureGroup,plsqlPackage,plsqlErrInBracket,PlsqlProcedureJava
+    
+else
+    " Syntax Synchronizing
+    syn sync minlines=1000 maxlines=2000
+endif
+"
 " Define the default highlighting.
 " Only when an item doesn't have highlighting yet.
 
   hi def link plsqlAttribute	    Macro
   hi def link plsqlBlockError	    Error
   hi def link plsqlBooleanLiteral   Boolean
-  hi def link plsqlCharLiteral	    Character
-  hi def link plsqlComment	    Comment
-  hi def link plsqlCommentL	    Comment
-  hi def link plsqlConditional	    Conditional
-  hi def link plsqlError	    Error
+  hi def link plsqlQuotedIdentifier	Character
+  hi def link plsqlComment	        Comment
+  hi def link plsqlCommentL	        Comment
+  hi def link plsqlConditional	    Keyword
+  hi def link plsqlCase	            Conditional
+  hi def link plsqlError	        Error
   hi def link plsqlErrInBracket	    Error
   hi def link plsqlErrInBlock	    Error
   hi def link plsqlErrInParen	    Error
   hi def link plsqlException	    Function
   hi def link plsqlFloatLiteral	    Float
-  hi def link plsqlFunction	    Function
-  hi def link plsqlGarbage	    Error
+  hi def link plsqlFunction	        Function
+  hi def link plsqlGarbage	        Error
   hi def link plsqlHostIdentifier   Label
   hi def link plsqlIdentifier	    Normal
   hi def link plsqlIntLiteral	    Number
-  hi def link plsqlOperator	    Operator
+  hi def link plsqlOperator	        Operator
   hi def link plsqlParenError	    Error
   hi def link plsqlSpaceError	    Error
-  hi def link plsqlPseudo	    PreProc
-  hi def link plsqlKeyword	    Keyword
+  hi def link plsqlPseudo	        PreProc
+  hi def link plsqlKeyword	        Keyword
+  hi def link plsqlEND              Keyword
+  hi def link plsqlBEGIN            Keyword
+  hi def link plsqlISAS             Statement
   hi def link plsqlReserved         Statement
-  hi def link plsqlRepeat	    Repeat
-  hi def link plsqlStorage	    StorageClass
+  hi def link plsqlRepeat	        Repeat
+  hi def link plsqlStorage	        StorageClass
   hi def link plsqlFunction  	    Function
   hi def link plsqlStringError	    Error
   hi def link plsqlStringLiteral    String
   hi def link plsqlCommentString    String
   hi def link plsqlComment2String   String
+  hi def link plsqlTrigger	        Function
+  hi def link plsqlTypeAttribute    StorageClass
+  hi def link plsqlTodo		        Todo
 " to be able to change them, need override whether defined or not
 if exists("plsql_legacy_sql_keywords")
-    hi link plsqlSQLKeyword     Function
-    hi link plsqlSymbol	    Normal
-    hi link plsqlParen	    Normal
+    hi link plsqlSQLKeyword         Function
+    hi link plsqlSymbol	            Normal
+    hi link plsqlParen	            Normal
 else
-    hi link plsqlSymbol	    Special
-    hi link plsqlParen	    Special
+    hi link plsqlSymbol	            Special
+    hi link plsqlParen	            Special
 endif
-  hi def link plsqlTrigger	    Function
-  hi def link plsqlTypeAttribute    StorageClass
-  hi def link plsqlTodo		    Todo
 
 let b:current_syntax = "plsql"
 let &cpo = s:cpo_sav
 unlet! s:cpo_sav
 
-
-" vim: ts=8 sw=2
+" vim: ts=4 sw=4

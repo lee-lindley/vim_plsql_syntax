@@ -1,5 +1,7 @@
 # vim_plsql_syntax
 
+Provides for syntax highlighting of Oracle SQL and PL/SQL files in *vim*.
+
 Repository includes
 
     syntax/plsql.vim
@@ -8,28 +10,59 @@ Repository includes
 ## plsql.vim syntax file
 
 The syntax file replaces the functionality of the *plsql.vim* file that ships with vim (it was last updated
-for Oracle 9). This update adds keywords and syntax through Oracle version 19c.
+for Oracle 9). 
 
-It also fixes q-quote operator syntax, exponential notation and assorted oddities. It does away
+> NOTE: This file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
+
+This update adds keywords and syntax through Oracle version 19c.
+It also fixes Q-quote operator syntax, exponential notation and assorted oddities. It does away
 with trying to separate SQL from PL/SQL keywords unless *plsql_legacy_sql_keywords* is set.
+
 
 Behavior was changed for highlight groups *plsqlSymbol* and *plsqlSQLKeyword*. If you want the
 original behavior, add the following to your *.vimrc* file:
 
+
 ```vim
 let plsql_legacy_sql_keywords = 1
 ```
+
+### Folding
+
+To turn on syntax folding, issue the following commands to enable folding and reload the syntax file:
+
+```vim
+:let plsql_fold = 1
+:set syntax=plsql
+```
+
+In the installation section there are some suggestions for your *.vimrc* file, including how to turn
+on folding automatically without having to open all folds every time you open a file.
+
+Folding is defined for
+
+* multi-line comments
+* multi-line string literals including those created with the Q-quote operator
+* BEGIN ... END; blocks including those that encompass the body of a procedure
+* CASE ... END conditional blocks, both SQL and PL/SQL (END CASE;)
+* IF ... END IF; conditional blocks
+* LOOP ... END LOOP; repeat blocks
+
+There is an option to turn on folding that attempts to parse PROCEDURE/FUNCTION; however, it turns
+out to be difficult and I was not successful. Specifically, a BEGIN ... END; block inside a procedure
+body BEGIN ... END; block was not achievable with the techniques I was able to understand from the documentation.
+If an expert would like to take a wack at it, send me a pull request. I know how to torture it!
 
 ## lee.vim color file
 
 The colors file *lee.vim* is a Black background theme.
 
 *lee.vim* provides separate
-colors for *Numbers* and *Boolean*, *Constant* (strings) and *Character* (double quoted names) while the common color files
+colors for *Numbers* and *Boolean*, *Constant* (strings) and *Character* (double quoted identifiers) while the common color files
 combine them. 
 
 The rational for separating *Character* to a different color is that double quoted literal strings are mapped to *Character*.
-Double Quoted literals in SQL are object names that are case sensitive and may contain spaces. Since they are really
+Double Quoted literals in SQL are identifiers (object names) that are case sensitive and may contain spaces. Since they are really
 table and column names, or column aliases, in your program rather than string literal data, they deserve a color
 closer to what you use for *Normal*. *lee.vim* makes them Cyan which is close to the Electric Blue of *Normal*.
 
@@ -58,7 +91,7 @@ with the *legacy* setting discussed above if you prefer it.
 ## Original PL/SQL syntax file with *lee.vim* color file
 
 Notice the distinction between some SQL keywords and others. Also note some parsing is broken, in
-particular the q-quote operator (q'!text!').
+particular the Q-quote operator (q'!text!').
 
 | Screenshots - 2 |
 |:--:|
@@ -136,6 +169,14 @@ syntax enable
 colorscheme lee
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
+```
+
+If you want to turn on folding, and optionally open all folds when the file is loaded (default
+when you turn on folding is to start with all folds closed), add the following to *.vimrc* before the BufRead lines:
+
+```vim
+let plsql_fold = 1
+au Syntax plsql normal zR
 ```
 
 The [manual page](https://vimhelp.org/syntax.txt.html#%3Asyn-files) may be helpful. See
