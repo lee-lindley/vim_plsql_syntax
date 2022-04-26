@@ -612,12 +612,12 @@ syn cluster plsqlIdentifiers contains=plsqlIdentifier,plsqlQuotedIdentifier
 
 " quoted string literals
 if exists("plsql_fold")
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ fold
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ fold
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ fold
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ fold
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ fold
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ fold
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ fold keepend extend
 else
     syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ 
     syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ 
