@@ -7,16 +7,17 @@ Name"
     , 123 AS "integer val" , .7 as "trailing dec", 123. as "really an int but classified float"
     , 123.456 as "float" , 1.27E-2 as "exp not"
     -- leading sign is classified as an operator. That works from a logical perspective (unary operator).
-    , -123 AS "n integer val" , -.7 as "n trailing dec", -123. as "n really an int but classified float"
+    , -123 AS "n integer val" , -.7 as "n trailing dec", -123.D as "n really an int but classified double"
     , -123.456 as "n float" , -1.27E+2 as "n exp not"
-    , +123 AS "p integer val" , +.7 as "p trailing dec", +123. as "p really an int but classified float"
-    , +123.456 as "p float" , +1.27E2 as "p exp not"
+    , +123 AS "p integer val" , +.7 as "p trailing dec", +123.F as "p really an int but classified float"
+    , +123.456f as "p float", -123.456d as "p_double" , +1.27E2D as "p exp not double"
 -- TODO XXX DEBUG NOTE FIXME 
 FROM hr.employees e
 JOIN hr.departments d
     ON e.department_id = d.department_id
 WHERE e.first_name = 'Bruce' AND e.last_name = 'Lee'
 ORDER BY d.department_name;
+
 MERGE INTO xyz t
 USING (
     SELECT abc FROM zala WHERE 1=1 and TO_DATE('12/31/2021','mm/dd/yyyy') < SYSDATE

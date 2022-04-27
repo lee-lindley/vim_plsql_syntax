@@ -39,7 +39,9 @@ hi Operator     term=bold		ctermfg=Yellow	    guifg=#CCCC00
 hi Ignore				        ctermfg=black	    guifg=bg
 hi Error	    term=reverse    ctermfg=White       guifg=White     guibg=Red       ctermbg=Red     
 hi Todo	        term=standout   ctermfg=Black       guifg=Blue      guibg=Yellow    ctermbg=Yellow  
-
+" set foldcolumn=2
+hi Folded                       ctermfg=Black       guifg=Black     guibg=DarkGray  ctermbg=DarkGray
+hi FoldColumn                   ctermfg=DarkRed     guifg=DarkRed   guibg=DarkGray  ctermbg=DarkGray
 " .k Keyword #00CC88 bold
 " .nf Name.Function #4DFFF
 " .ow Operator.Word #CCCC00 bold
