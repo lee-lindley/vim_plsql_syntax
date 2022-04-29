@@ -7,6 +7,9 @@ Repository includes
     syntax/plsql.vim
     colors/lee.vim
 
+[Syntax Highlighting for PL/SQL in vim](https://lee-lindley.github.io/oracle/plsql/sql/vim/2022/04/29/vim-plsql-syntax.html) 
+describes how I came to create this repository.
+
 ## Content
 
 - [plsql.vim syntax file](#plsqlvim-syntax-file)
