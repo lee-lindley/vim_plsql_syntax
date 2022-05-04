@@ -67,7 +67,7 @@ If you habitually do not put the procedure/function name in the *END* statement 
 you might want to disable folding for procedures with:
 
 ```vim
-:let disable_procedure_fold = 1
+:let plsql_disable_procedure_fold = 1
 :set syntax=plsql
 ```
 
@@ -332,7 +332,7 @@ the syntax file.
 
 ```vim
 let plsql_fold = 1
-" let disable_procedure_fold = 1
+" let plsql_disable_procedure_fold = 1
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
 au Syntax plsql colorscheme lee

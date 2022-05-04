@@ -25,7 +25,7 @@
 "
 " To disable folding procedure/functions (recommended if you habitually
 "  do not put the method name on the END statement)
-" let disable_procedure_fold = 1
+" let plsql_disable_procedure_fold = 1
 "
 "     From my vimrc file -- turn syntax and syntax folding on,
 "     associate file suffixes as plsql, open all the folds on file open
@@ -702,7 +702,7 @@ if exists("plsql_fold")
         \ transparent
         \ contains=ALLBUT,@plsqlOnlyGroup,plsqlUpdateSet
 
-    if !exists("disable_procedure_fold")
+    if !exists("plsql_disable_procedure_fold")
         " this is brute force and requires you have the procedure/function name in the END
         " statement. ALthough Oracle makes it optional, we cannot. If you do not
         " have it, then you can fold the BEGIN/END block of the procedure but not
