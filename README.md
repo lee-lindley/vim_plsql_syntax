@@ -38,7 +38,7 @@ describes how I came to create this repository.
 The syntax file replaces the functionality of the *plsql.vim* file that ships with vim (it was last updated
 for Oracle 9). 
 
-> NOTE: Release v20220426_1.2 (tag r1.2) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9. It did not include Procedure/Function folding.
+> Release v20220503_1.3 (tag r1.3) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
 
 Relative to the original *plsql.vim*, this update adds keywords and syntax through Oracle version 19c.
 It fixes Q-quote operator syntax, exponential notation and assorted oddities, plus 
@@ -122,8 +122,8 @@ SELECT * from a,b
 The line beginning "WITH a AS (" through the line containing ")" will fold. The line containing ",b AS ("
 through the line containing ")" will fold.
 
-> Note: if you put both the closing paren of the first *WITH* clause (aka Common Table Expression or *CTE*),
-and the opening paren of the next *CTE* on the same line, then it lumps it all into a single fold block. Too bad.
+> if you put both the closing paren of the first *WITH* clause (aka Common Table Expression or *CTE*),
+> and the opening paren of the next *CTE* on the same line, then it lumps it all into a single fold block. Too bad.
 
 This also works with the old style Oracle inline views with the same caveat about closing and opening
 parens needing to be on separate lines.
@@ -170,8 +170,8 @@ fold the assignments.
 
 Other components of a *MERGE* are inside parentheses which can be folded.
 
-If the term that ends the *SET* assignments is on a separte line, then it is not included in the fold.
-This is similar to the disucssion about *FROM* in [*SELECT*/*FROM* Folding](#selectfrom-folding).
+If the term that ends the *SET* assignments is on a separate line, then it is not included in the fold.
+This is similar to the discussion about *FROM* in [*SELECT*/*FROM* Folding](#selectfrom-folding).
 
 ## lee.vim color file
 
