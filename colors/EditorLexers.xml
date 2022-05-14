@@ -26,7 +26,7 @@
         </STYLE>
         <STYLE name="SQL*Plus Keyword">
           <PROPS>
-            <FORE>$00FFFDFE</FORE>
+            <FORE>$0000CC00</FORE>
             <BOLD>true</BOLD>
             <ITALIC>false</ITALIC>
             <UNDERLINE>false</UNDERLINE>
