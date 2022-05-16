@@ -26,8 +26,8 @@
         </STYLE>
         <STYLE name="SQL*Plus Keyword">
           <PROPS>
-            <FORE>$0000CC00</FORE>
             <BOLD>true</BOLD>
+            <FORE>$0000CC00</FORE>
             <ITALIC>false</ITALIC>
             <UNDERLINE>false</UNDERLINE>
           </PROPS>
@@ -47,8 +47,8 @@
         </STYLE>
         <STYLE name="Keyword">
           <PROPS>
-            <FORE>$0000CC00</FORE>
             <BOLD>true</BOLD>
+            <FORE>$0000CC00</FORE>
             <ITALIC>false</ITALIC>
             <UNDERLINE>false</UNDERLINE>
           </PROPS>
@@ -56,8 +56,8 @@
         </STYLE>
         <STYLE name="Datatype">
           <PROPS>
-            <FORE>$002F8B00</FORE>
             <BOLD>true</BOLD>
+            <FORE>$002F8B00</FORE>
             <ITALIC>false</ITALIC>
             <UNDERLINE>false</UNDERLINE>
           </PROPS>
@@ -89,7 +89,10 @@
         </STYLE>
         <STYLE name="SYS Package">
           <PROPS>
+            <BOLD>true</BOLD>
             <FORE>$00FFFF4D</FORE>
+            <ITALIC>true</ITALIC>
+            <UNDERLINE>false</UNDERLINE>
           </PROPS>
           <STATES>26</STATES>
         </STYLE>
@@ -245,14 +248,16 @@
     </STYLE>
     <STYLE name="Current Line" global_style="12">
       <PROPS>
-        <BACK>$00FFF0E0</BACK>
+        <BACK>clGray</BACK>
+        <BOLD>false</BOLD>
+        <ITALIC>false</ITALIC>
+        <UNDERLINE>false</UNDERLINE>
       </PROPS>
     </STYLE>
     <STYLE name="Selected Text" global_style="13">
       <PROPS>
-        <BACK>$00FF9933</BACK>
+        <BACK>clPurple</BACK>
         <BOLD>false</BOLD>
-        <FORE>clWhite</FORE>
         <ITALIC>false</ITALIC>
         <UNDERLINE>false</UNDERLINE>
       </PROPS>
@@ -271,7 +276,10 @@
     <STYLE name="Search Match" global_style="16">
       <PROPS>
         <BACK>clTeal</BACK>
+        <BOLD>false</BOLD>
+        <ITALIC>false</ITALIC>
         <ALPHA>75</ALPHA>
+        <UNDERLINE>false</UNDERLINE>
       </PROPS>
     </STYLE>
     <STYLE name="Syntax Error" global_style="17">
