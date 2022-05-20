@@ -227,7 +227,10 @@
     </STYLE>
     <STYLE name="Caret" global_style="8">
       <PROPS>
-        <FORE>clGray</FORE>
+        <BOLD>false</BOLD>
+        <FORE>clRed</FORE>
+        <ITALIC>false</ITALIC>
+        <UNDERLINE>false</UNDERLINE>
       </PROPS>
     </STYLE>
     <STYLE name="Edge" global_style="9">
@@ -258,6 +261,7 @@
       <PROPS>
         <BACK>clPurple</BACK>
         <BOLD>false</BOLD>
+        <FORE>clWhite</FORE>
         <ITALIC>false</ITALIC>
         <UNDERLINE>false</UNDERLINE>
       </PROPS>
