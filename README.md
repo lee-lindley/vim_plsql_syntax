@@ -63,6 +63,17 @@ To turn on syntax folding, issue the following commands to enable folding and re
 :set syntax=plsql
 ```
 
+If you habitually do not put the procedure/function name in the *END* statement of the definition,
+you might want to disable folding for procedures with:
+
+```vim
+:let plsql_disable_procedure_fold = 1
+:set syntax=plsql
+```
+
+The reason is that it will search to the end of the file on each procedure/function declaration looking for it,
+so on a large file it can be expensive.
+
 In the [Installation](#installation) section there are some suggestions for your *.vimrc* file, including how to turn
 on folding automatically without having to open all folds every time you open a file.
 
@@ -321,11 +332,29 @@ the syntax file.
 
 ```vim
 let plsql_fold = 1
+" let plsql_disable_procedure_fold = 1
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
 au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
 au Syntax plsql colorscheme lee
 au Syntax plsql normal zR
 au Syntax plsql set foldcolumn=2 "optional if you want to see choosable folds on the left
+```
+
+As noted in the [Folding](#folding) section you may encounter files where vim takes a very long
+time to parse the syntax of a plsql file. The most likely cause is that the code author does not
+put procedure names on the closing END statement of the procedure. Although I do so religiously,
+many people do not. If I'm working on someone else's code I may put a project level *.vimlocal* 
+file in the directory containing this variable setting:
+
+```vim
+:let plsql_disable_procedure_fold = 1
+```
+
+In my main *.vimrc* or *_vimrc* I have a directive to read any local settings file but not complain
+if there is not one present. This must come before the autocommands to load the syntax file.
+
+```vim
+silent! so .vimlocal
 ```
 
 I do not like syntax colors getting in my way when looking at a diff. I also
@@ -334,7 +363,10 @@ For that purpose the *torte* colorscheme serves well. This code from my *.vimrc*
 selects *torte* and avoids syntax highlighting when we are running a diff, while implementing
 most of the options discussed above when we are not running a diff.
 
+
 ```vim
+" Allow for local set/let of variables
+silent! so .vimlocal
 if &diff 
     syntax off
     colorscheme torte
