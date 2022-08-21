@@ -40,6 +40,8 @@ for Oracle 9).
 
 > Release v20220503_1.3 (tag r1.3) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
 
+> Release v20220821_1.4 (tag r1.4) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
+
 Relative to the original *plsql.vim*, this update adds keywords and syntax through Oracle version 19c.
 It fixes Q-quote operator syntax, exponential notation and assorted oddities, plus 
 adds optional folding.
@@ -71,8 +73,8 @@ you might want to disable folding for procedures with:
 :set syntax=plsql
 ```
 
-The reason is that it will search to the end of the file on each procedure/function declaration looking for it,
-so on a large file it can be expensive.
+The reason is that it will search to the end of the file on each procedure/function declaration looking for it.
+On a large file without the procedure name in closing END statement searching to the end for each match can be expensive.
 
 In the [Installation](#installation) section there are some suggestions for your *.vimrc* file, including how to turn
 on folding automatically without having to open all folds every time you open a file.
@@ -86,6 +88,7 @@ Folding is defined for
 * CASE ... END conditional blocks, both SQL and PL/SQL (END CASE;)
 * IF ... END IF; conditional blocks
 * LOOP ... END LOOP; repeat blocks
+* CURSOR ... ;
 * ( ... ) parentheses groups
 * *SELECT* ... *FROM* 
 * *UPDATE/MERGE SET* assignments
@@ -376,7 +379,7 @@ else
     let plsql_fold = 1
     au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg set filetype=plsql
     au BufNewFile,BufRead *.sql,*.pls,*.tps,*.tpb,*.pks,*.pkb,*.pkg,*.trg syntax on
-    "au Syntax plsql colorscheme lee
+    " au Syntax plsql colorscheme lee
     au Syntax plsql normal zR
     au Syntax plsql set foldcolumn=2 "optional if you want to see choosable folds on the left
 endif

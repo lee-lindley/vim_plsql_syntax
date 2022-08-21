@@ -36,6 +36,19 @@ CREATE OR
     RETURN VARCHAR2
     DETERMINISTIC
     ;
+    CURSOR c1
+    IS
+    SELECT sysdate from dual
+    ;
+    cursor c2(d date) is
+    select d from dual;
+    
+    cursor c3(d date) return date is
+    select d from dual
+    ;
+    
+    cursor c4 return date is
+    select d from dual;
 END sample_pkg;
 /
 CREATE OR REPLACE PACKAGE BODY sample_pkg
