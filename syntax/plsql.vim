@@ -683,9 +683,9 @@ syn match plsqlConditional "\<END\>\_s\+\<IF\>"
 syn match plsqlCase "\<END\>\_s\+\<CASE\>"
 syn match plsqlCase "\<CASE\>"
 
-syn region sqlPlusCommentL start="^\( *\)\(REM\)\( \|$\)" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
-syn region sqlPlusCommand  start="^\( *\)\(SET\|DEFINE\|PROMPT\|ACCEPT\|EXEC\|HOST\|SHOW\|VAR\|VARIABLE\|COL\|WHENEVER\|TIMING\)\( \|$\)" skip="\\$" end="$" keepend extend
-syn region sqlPlusRunFile  start="^\( *\)\(@\|@@\)" skip="\\$" end="$" keepend extend
+syn region sqlPlusCommentL start="^\(REM\)\( \|$\)" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
+syn region sqlPlusCommand  start="^\(SET\|DEFINE\|PROMPT\|ACCEPT\|EXEC\|HOST\|SHOW\|VAR\|VARIABLE\|COL\|WHENEVER\|TIMING\)\( \|$\)" skip="\\$" end="$" keepend extend
+syn region sqlPlusRunFile  start="^\(@\|@@\)" skip="\\$" end="$" keepend extend
 
 if get(g:,"plsql_fold",0) == 1
     setlocal foldmethod=syntax
