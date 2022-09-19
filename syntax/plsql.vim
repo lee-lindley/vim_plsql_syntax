@@ -4,8 +4,11 @@
 " Previous Maintainer: Jeff Lanzarotta (jefflanzarotta at yahoo dot com)
 " Previous Maintainer: C. Laurence Gonsalves (clgonsal@kami.com)
 " URL: https://github.com/lee-lindley/vim_plsql_syntax
-" Last Change: Aug 21, 2022   
-" History  Lee Lindley (lee dot lindley at gmail dot com)
+" Last Change: Sep 19, 2022   
+" History  Carsten Czarski (carsten dot czarski at oracle com)
+"               add handling for typical SQL*Plus commands (rem, start, host, set, etc)
+"               add error highlight for non-breaking space
+"          Lee Lindley (lee dot lindley at gmail dot com)
 "               use get with default 0 instead of exists per Bram suggestion
 "               make procedure folding optional
 "               updated to 19c keywords. refined quoting. 
@@ -55,7 +58,10 @@ syn case ignore
 syn match   plsqlGarbage "[^ \t()]"
 syn match   plsqlIdentifier "[a-z][a-z0-9$_#]*"
 syn match   plsqlHostIdentifier ":[a-z][a-z0-9$_#]*"
-syn match   plsqlNbsp "[\xa0]"
+
+" The Non-Breaking is often accidentally typed (Mac User: Opt+Space, after typing the "|",  Opt+7);
+" error highlight for these avoids running into annoying compiler errors.
+syn match   plsqlIllegalSpace "[\xa0]"
 
 " When wanted, highlight the trailing whitespace.
 if get(g:,"plsql_space_errors",0) == 1
@@ -585,18 +591,18 @@ syn match plsqlEND "\<END\>"
 syn match plsqlISAS "\<\(IS\|AS\)\>"
 
 " Various types of comments.
-syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
+syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
 if get(g:,"plsql_fold",0) == 1
     syntax region plsqlComment
         \ start="/\*" end="\*/"
         \ extend
-        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
+        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
         \ fold
 else
     syntax region plsqlComment
         \ start="/\*" end="\*/"
         \ extend
-        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
+        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
 endif
 syn cluster plsqlCommentAll contains=plsqlCommentL,plsqlComment
 
@@ -683,9 +689,9 @@ syn match plsqlConditional "\<END\>\_s\+\<IF\>"
 syn match plsqlCase "\<END\>\_s\+\<CASE\>"
 syn match plsqlCase "\<CASE\>"
 
-syn region sqlPlusCommentL start="^\(REM\)\( \|$\)" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlNbsp
-syn region sqlPlusCommand  start="^\(SET\|DEFINE\|PROMPT\|ACCEPT\|EXEC\|HOST\|SHOW\|VAR\|VARIABLE\|COL\|WHENEVER\|TIMING\)\( \|$\)" skip="\\$" end="$" keepend extend
-syn region sqlPlusRunFile  start="^\(@\|@@\)" skip="\\$" end="$" keepend extend
+syn region plsqlSqlPlusCommentL start="^\(REM\)\( \|$\)" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
+syn region plsqlSqlPlusCommand  start="^\(SET\|DEFINE\|PROMPT\|ACCEPT\|EXEC\|HOST\|SHOW\|VAR\|VARIABLE\|COL\|WHENEVER\|TIMING\)\( \|$\)" skip="\\$" end="$" keepend extend
+syn region plsqlSqlPlusRunFile  start="^\(@\|@@\)" skip="\\$" end="$" keepend extend
 
 if get(g:,"plsql_fold",0) == 1
     setlocal foldmethod=syntax
@@ -832,10 +838,10 @@ hi def link plsqlTrigger	        Function
 hi def link plsqlTypeAttribute      StorageClass
 hi def link plsqlTodo		        Todo
 
-hi def link plsqlNbsp               Error
-hi def link sqlPlusCommand          PreProc
-hi def link sqlPlusRunFile          Include
-hi def link sqlPlusCommentL         Comment
+hi def link plsqlIllegalSpace       Error
+hi def link plsqlSqlPlusCommand     PreProc
+hi def link plsqlSqlPlusRunFile     Include
+hi def link plsqlSqlPlusCommentL    Comment
 
 " to be able to change them after loading, need override whether defined or not
 if get(g:,"plsql_legacy_sql_keywords",0) == 1
