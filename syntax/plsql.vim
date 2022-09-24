@@ -57,6 +57,7 @@ syn case ignore
 
 syn match   plsqlGarbage "[^ \t()]"
 syn match   plsqlIdentifier "[a-z][a-z0-9$_#]*"
+syn match   plsqlSqlPlusDefine "&&\?[a-z][a-z0-9$_#]*\.\?"
 syn match   plsqlHostIdentifier ":[a-z][a-z0-9$_#]*"
 
 " The Non-Breaking is often accidentally typed (Mac User: Opt+Space, after typing the "|",  Opt+7);
@@ -86,7 +87,6 @@ syn match   plsqlOperator "\<IS\\_s\+\(NOT\_s\+\)\?NULL\>"
 "
 " conditional compilation Preprocessor directives and sqlplus define sigil
 syn match plsqlPseudo "$[$a-z][a-z0-9$_#]*"
-syn match plsqlPseudo "&"
 
 syn match plsqlReserved "\<\(CREATE\|THEN\|UPDATE\|INSERT\|SET\)\>"
 syn match plsqlKeyword "\<\(REPLACE\|PACKAGE\|FUNCTION\|PROCEDURE\|TYPE|BODY\|WHEN\|MATCHED\)\>"
@@ -591,18 +591,18 @@ syn match plsqlEND "\<END\>"
 syn match plsqlISAS "\<\(IS\|AS\)\>"
 
 " Various types of comments.
-syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
+syntax region plsqlCommentL start="--" skip="\\$" end="$" keepend extend contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace,plsqlSqlplusDefine
 if get(g:,"plsql_fold",0) == 1
     syntax region plsqlComment
         \ start="/\*" end="\*/"
         \ extend
-        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
+        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace,plsqlSqlplusDefine
         \ fold
 else
     syntax region plsqlComment
         \ start="/\*" end="\*/"
         \ extend
-        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace
+        \ contains=@plsqlCommentGroup,plsqlSpaceError,plsqlIllegalSpace,plsqlSqlplusDefine
 endif
 syn cluster plsqlCommentAll contains=plsqlCommentL,plsqlComment
 
@@ -625,23 +625,23 @@ syn match   plsqlFloatLiteral contained "\.\(\d\+\([eE][+-]\?\d\+\)\?\)[fd]\?"
 " double quoted strings in SQL are database object names. Should be a subgroup of Normal.
 " We will use Character group as a proxy for that so color can be chosen close to Normal
 syn region plsqlQuotedIdentifier	matchgroup=plsqlOperator start=+n\?"+     end=+"+ keepend extend
-syn cluster plsqlIdentifiers contains=plsqlIdentifier,plsqlQuotedIdentifier
+syn cluster plsqlIdentifiers contains=plsqlIdentifier,plsqlQuotedIdentifier,plsqlSqlPlusDefine
 
 " quoted string literals
 if get(g:,"plsql_fold",0) == 1
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ fold keepend extend
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ fold keepend extend
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ fold keepend extend
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ fold keepend extend
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ fold keepend extend
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ contains=plsqlSqlplusDefine fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ contains=plsqlSqlplusDefine fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ contains=plsqlSqlplusDefine fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ contains=plsqlSqlplusDefine fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ contains=plsqlSqlplusDefine fold keepend extend
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ contains=plsqlSqlplusDefine fold keepend extend
 else
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ 
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ 
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ 
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ 
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ 
-    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ 
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?'+  skip=+''+    end=+'+ contains=plsqlSqlplusDefine
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\z([^[(<{]\)+    end=+\z1'+ contains=plsqlSqlplusDefine
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'<+   end=+>'+ contains=plsqlSqlplusDefine
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'{+   end=+}'+ contains=plsqlSqlplusDefine
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'(+   end=+)'+ contains=plsqlSqlplusDefine
+    syn region plsqlStringLiteral	matchgroup=plsqlOperator start=+n\?q'\[+  end=+]'+ contains=plsqlSqlplusDefine
 endif
 
 syn keyword plsqlBooleanLiteral TRUE FALSE 
@@ -839,6 +839,7 @@ hi def link plsqlTypeAttribute      StorageClass
 hi def link plsqlTodo		        Todo
 
 hi def link plsqlIllegalSpace       Error
+hi def link plsqlSqlPlusDefine      PreProc
 hi def link plsqlSqlPlusCommand     PreProc
 hi def link plsqlSqlPlusRunFile     Include
 hi def link plsqlSqlPlusCommentL    Comment

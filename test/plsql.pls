@@ -1,8 +1,13 @@
+REM a sqlplus comment
+prompt set this to anything you want
+define literal_keyword="whatever dude"
+whenever sqlerror then failure
 ().,;
-SELECT e.first_name AS "First Name", e.last_name AS "Last Name"
+SELECT 
+    e.first_name AS "First Name", e.last_name AS "Last Name"
     , d.department_name AS "Department 
 Name"
-    , 'a string with embedded quote ('')' as regq, q'{a string with embedded quote (')}' as qquote
+    , 'a &literal_keyword string with embedded quote ('')' as regq, q'{a &&literal_keyword. string with embedded quote (')}' as qquote
     , 'a string ending in a quote ''' as "regq_end_quote XXX", 'xxx' AS XXX
     , 123 AS "integer val" , .7 as "trailing dec", 123. as "really an int but classified float"
     , 123.456 as "float" , 1.27E-2 as "exp not"
@@ -12,8 +17,8 @@ Name"
     , +123 AS "p integer val" , +.7 as "p trailing dec", +123.F as "p really an int but classified float"
     , +123.456f as "p float", -123.456d as "p_double" , +1.27E2D as "p exp not double"
 -- TODO XXX DEBUG NOTE FIXME 
-FROM hr.employees e
-JOIN hr.departments d
+FROM &hr_schema..employees e
+JOIN &&hr_schema..departments d
     ON e.department_id = d.department_id
 WHERE e.first_name = 'Bruce' AND e.last_name = 'Lee'
 ORDER BY d.department_name;

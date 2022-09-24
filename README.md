@@ -35,12 +35,12 @@ describes how I came to create this repository.
 
 ## plsql.vim syntax file
 
-The syntax file replaces the functionality of the *plsql.vim* file that ships with vim (it was last updated
+The syntax file replaces the functionality of the *plsql.vim* file that ships with vim versions 8 and earlier (it was last updated
 for Oracle 9). 
 
-> Release v20220503_1.3 (tag r1.3) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
-
 > Release v20220821_1.4 (tag r1.4) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* version 9.
+
+> Release v20220924_1.5 (tag r1.5) of this syntax file was submitted to the *vim* maintainers for inclusion in *vim* verison 9.
 
 Relative to the original *plsql.vim*, this update adds keywords and syntax through Oracle version 19c.
 It fixes Q-quote operator syntax, exponential notation and assorted oddities, plus 
@@ -55,6 +55,7 @@ original behavior, add the following to your *.vimrc* file:
 ```vim
 let plsql_legacy_sql_keywords = 1
 ```
+We also added highlighting for some *SqlPlus* commands and define variables.
 
 ### Folding
 
