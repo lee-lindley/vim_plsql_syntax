@@ -5,6 +5,8 @@
 " Previous Maintainer: C. Laurence Gonsalves (clgonsal@kami.com)
 " URL: https://github.com/lee-lindley/vim_plsql_syntax
 " Last Change: Feb 19, 2025
+" History:  Enno Konfekt move handling of optional syntax folding from syntax
+"               file to ftplugin
 
 if exists("b:did_ftplugin") | finish | endif
 let b:did_ftplugin = 1
